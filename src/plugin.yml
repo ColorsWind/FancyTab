@@ -1,0 +1,9 @@
+name: FancyTab
+author: Codebucket
+version: 1.8 Release
+main: de.codebucket.fancytab.FancyTab
+website: http://www.dcminecraft.jimdo.de
+commands:
+     tabreload:
+          description: Reload Tablist (Plugin)
+          usage: /<command>
