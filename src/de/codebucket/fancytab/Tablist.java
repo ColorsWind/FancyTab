@@ -291,14 +291,14 @@ public class Tablist
 
 	private String textValues(String line) 
 	{
-		line = line.replaceAll("%sl1", "–„ –ˆ –ˆ –ˆ –€");
-		line = line.replaceAll("%sl2", "–€ –ˆ –ˆ –ˆ –„");
-		line = line.replaceAll("%sl3", "–„–„ – –  –€–€");
-		line = line.replaceAll("%sl4", "–€–€ – –  –„–„");
-		line = line.replaceAll("%sl5", "–¼ –¼ –¼");
-		line = line.replaceAll("%sl6", "–  –¡ – ");
-		line = line.replaceAll("%sl7", "–¡ –  –¡");
-		line = line.replaceAll("%sl8", "–ˆ –ˆ –ˆ");
+		line = line.replaceAll("%sl1", "â–„ â–ˆ â–ˆ â–ˆ â–€");
+		line = line.replaceAll("%sl2", "â–€ â–ˆ â–ˆ â–ˆ â–„");
+		line = line.replaceAll("%sl3", "â–„â–„ â– â–  â–€â–€");
+		line = line.replaceAll("%sl4", "â–€â–€ â– â–  â–„â–„");
+		line = line.replaceAll("%sl5", "â–¼ â–¼ â–¼");
+		line = line.replaceAll("%sl6", "â–  â–¡ â– ");
+		line = line.replaceAll("%sl7", "â–¡ â–  â–¡");
+		line = line.replaceAll("%sl8", "â–ˆ â–ˆ â–ˆ");
 		line = ChatColor.translateAlternateColorCodes('&', line);
 		line = line.replaceAll("&&", "&");
 		line = line.replaceAll("%a", "Ã¤");
