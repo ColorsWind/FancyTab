@@ -21,7 +21,7 @@ public class PacketHandler
 		NMSPacket packet = null;
 		try
 		{
-			packet = new NMSPacket("Packet201PlayerInfo");
+			packet = new NMSPacket("PacketPlayOutPlayerInfo");
 		} 
 		catch (Exception e)
 		{
@@ -29,9 +29,9 @@ public class PacketHandler
 			FancyTab.logConsole(Level.SEVERE, e.getMessage());
 		}
 
-		packet.setField("a", text);
-		packet.setField("b", Boolean.valueOf(cancel));
-		packet.setField("c", Integer.valueOf(0));
+		packet.setDeclaredField("a", text);
+		packet.setDeclaredField("b", Boolean.valueOf(cancel));
+		packet.setDeclaredField("c", Integer.valueOf(0));
 
 		sendPacket(player, packet.getPacket());
 	}
@@ -41,7 +41,7 @@ public class PacketHandler
 		NMSPacket packet = null;
 		try
 		{
-			packet = new NMSPacket("Packet201PlayerInfo");
+			packet = new NMSPacket("PacketPlayOutPlayerInfo");
 		} 
 		catch (Exception e)
 		{
@@ -49,9 +49,9 @@ public class PacketHandler
 			FancyTab.logConsole(Level.SEVERE, e.getMessage());
 		}
 
-		packet.setField("a", text);
-		packet.setField("b", Boolean.valueOf(cancel));
-		packet.setField("c", Integer.valueOf(0));
+		packet.setDeclaredField("a", text);
+		packet.setDeclaredField("b", Boolean.valueOf(cancel));
+		packet.setDeclaredField("c", Integer.valueOf(0));
 
 		sendPackets(packet.getPacket());
 	}

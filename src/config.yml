@@ -7,7 +7,7 @@
 #                       __/ |              
 #                      |___/     
 #  
-# FancyTab Version 1.8 by Codebucket
+# FancyTab Version 2.0 by Codebucket
 # http://www.codebucket.de/plugins/fancytab/
 # ------------------------------------------------------------------------
 #  
@@ -44,7 +44,7 @@
 # IMPORTANT: If the length of a slot is bigger then 16 characters, 
 # then will be the text of the slot reduced to 16 characters!
 #  
-# ------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 logConsole: true
 

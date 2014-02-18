@@ -1,6 +1,6 @@
 name: FancyTab
 author: Codebucket
-version: 1.8 Release
+version: 2.0 Release
 main: de.codebucket.fancytab.FancyTab
 website: http://www.dcminecraft.jimdo.de
 commands:

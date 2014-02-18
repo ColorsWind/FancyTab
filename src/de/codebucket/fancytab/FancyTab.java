@@ -73,7 +73,7 @@ public class FancyTab extends JavaPlugin
 			Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, startRefresh(), 1L, this.interval * 20L);
 		}
 
-		getLogger().info("Version 1.8 by Codebucket");
+		getLogger().info("Version 2.0 by Codebucket");
 	}
 	
 	@Override
