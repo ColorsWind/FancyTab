@@ -1,108 +1,111 @@
 package de.codebucket.fancytab.packet;
 
 import de.codebucket.fancytab.FancyTab;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class PacketHandler
- {
+{
 	FancyTab plugin;
-	private String version = "";
+	private Class<?> packetPlayOutPlayerInfo;
+	private Method getPlayerHandle;
+	private Field getPlayerConnection;
+	private Method sendPacket;
 
-	public PacketHandler(FancyTab plugin) 
+	public PacketHandler(FancyTab plugin)
 	{
-		this.plugin = plugin;
-		this.version = plugin.getServerVersion();
-	}
-
-	public void sendPacketRequest(Player player, String text, boolean cancel) 
-	{
-		NMSPacket packet = null;
-		try
+		try 
 		{
-			packet = new NMSPacket("PacketPlayOutPlayerInfo");
+			this.plugin = plugin;
+			packetPlayOutPlayerInfo = getMCClass("PacketPlayOutPlayerInfo");
+			getPlayerHandle = getCraftClass("entity.CraftPlayer").getMethod("getHandle");
+			getPlayerConnection = getMCClass("EntityPlayer").getDeclaredField("playerConnection");
+			sendPacket = getMCClass("PlayerConnection").getMethod("sendPacket", getMCClass("Packet"));
 		} 
-		catch (Exception e)
+		catch (Exception e) 
 		{
-			FancyTab.logConsole(Level.SEVERE, "Unknown or unsupported CraftBukkit version! Is the Plugin up to date?");
-			FancyTab.logConsole(Level.SEVERE, e.getMessage());
+			e.printStackTrace();
 		}
-
-		packet.setDeclaredField("a", text);
-		packet.setDeclaredField("b", Boolean.valueOf(cancel));
-		packet.setDeclaredField("c", Integer.valueOf(0));
-
-		sendPacket(player, packet.getPacket());
 	}
 	
-	public void sendPacketRequest(String text, boolean cancel) 
+	public Object createTablistPacket(String text, boolean cancel, int ping) 
 	{
-		NMSPacket packet = null;
 		try
 		{
-			packet = new NMSPacket("PacketPlayOutPlayerInfo");
-		} 
-		catch (Exception e)
-		{
-			FancyTab.logConsole(Level.SEVERE, "Unknown or unsupported CraftBukkit version! Is the Plugin up to date?");
-			FancyTab.logConsole(Level.SEVERE, e.getMessage());
+			Object packet = packetPlayOutPlayerInfo.newInstance();
+			Field a = packetPlayOutPlayerInfo.getDeclaredField("a");
+			a.setAccessible(true);
+			a.set(packet, text);
+			Field b = packetPlayOutPlayerInfo.getDeclaredField("b");
+			b.setAccessible(true);
+			b.set(packet, cancel);
+			Field c = packetPlayOutPlayerInfo.getDeclaredField("c");
+			c.setAccessible(true);
+			c.set(packet, ping);
+			return packet;
 		}
-
-		packet.setDeclaredField("a", text);
-		packet.setDeclaredField("b", Boolean.valueOf(cancel));
-		packet.setDeclaredField("c", Integer.valueOf(0));
-
-		sendPackets(packet.getPacket());
+		catch (Exception e) {}
+		return null;
+	}
+	
+	public Object createTablistPacket(String text, boolean cancel) 
+	{
+		return createTablistPacket(text, cancel, 0);
 	}
 
-	public void sendPacket(Player player, Object o) 
+	public void sendPackets(final Player player, final List<Object> packets) 
 	{
-		try 
+		try
 		{
-			Class<?> packet = Class.forName("net.minecraft.server." + this.version + ".Packet");
-			Class<?> craftPlayer = Class.forName("org.bukkit.craftbukkit." + this.version + ".entity.CraftPlayer");
-
-			if (!packet.isAssignableFrom(o.getClass())) 
+			for(Object packet : packets)
 			{
-				throw new IllegalArgumentException("Object o wasn't a packet!");
+				sendPacket.invoke(getPlayerConnection.get(getPlayerHandle.invoke(player)), packet);
 			}
-
-			Object cp = craftPlayer.cast(player);
-			Object handle = craftPlayer.getMethod("getHandle", new Class[0]).invoke(cp, new Object[0]);
-			Object con = handle.getClass().getField("playerConnection").get(handle);
-			con.getClass().getMethod("sendPacket", new Class[] { packet }).invoke(con, new Object[] { o });
-		} 
-		catch (Exception e)
-		{
-			FancyTab.logConsole(Level.SEVERE, "An error has occurred whilst sending the packets. Is Bukkit up to date?");
-			FancyTab.logConsole(Level.SEVERE, e.getMessage());
 		}
-	}
-
-	public void sendPackets(Object o)
-	{
-		try 
-		{
-			Class<?> packet = Class.forName("net.minecraft.server." + this.version + ".Packet");
-			Class<?> craftPlayer = Class.forName("org.bukkit.craftbukkit." + this.version + ".entity.CraftPlayer");
-			for (Player player : Bukkit.getOnlinePlayers()) 
-			{
-				if (!packet.isAssignableFrom(o.getClass())) 
-				{
-					throw new IllegalArgumentException("Object o wasn't a packet!");
-				}
-
-				Object cp = craftPlayer.cast(player);
-				Object handle = craftPlayer.getMethod("getHandle", new Class[0]).invoke(cp, new Object[0]);
-				Object con = handle.getClass().getField("playerConnection").get(handle);
-				con.getClass().getMethod("sendPacket", new Class[] { packet }).invoke(con, new Object[] { o });
-			}
-		} 
 		catch (Exception e) 
 		{
 			FancyTab.logConsole(Level.SEVERE, "An error has occurred whilst sending the packets. Is Bukkit up to date?");
 			FancyTab.logConsole(Level.SEVERE, e.getMessage());
 		}
 	}
+	
+	public void sendPackets(final List<Object> packets) 
+	{
+		try
+		{
+			for(Player player : Bukkit.getOnlinePlayers())
+			{
+				for(Object packet : packets)
+				{
+					sendPacket.invoke(getPlayerConnection.get(getPlayerHandle.invoke(player)), packet);
+				}
+			}
+		}
+		catch (Exception e) 
+		{
+			FancyTab.logConsole(Level.SEVERE, "An error has occurred whilst sending the packets. Is Bukkit up to date?");
+			FancyTab.logConsole(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	private Class<?> getMCClass(String name) throws ClassNotFoundException 
+	{
+		String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
+		String className = "net.minecraft.server." + version + name;
+		return Class.forName(className);
+	}
+
+	private Class<?> getCraftClass(String name) throws ClassNotFoundException 
+	{
+		String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
+		String className = "org.bukkit.craftbukkit." + version + name;
+		return Class.forName(className);
+	}
+
 }

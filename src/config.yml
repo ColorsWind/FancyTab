@@ -7,7 +7,7 @@
 #                       __/ |              
 #                      |___/     
 #  
-# FancyTab Version 2.0 by Codebucket
+# FancyTab Version 2.2 by Codebucket
 # http://www.codebucket.de/plugins/fancytab/
 # ------------------------------------------------------------------------
 #  
@@ -20,6 +20,7 @@
 # %numplayers% - Displays the amount of online players
 # %maxplayers% - Displays the maximum amount of players
 # %ip-adress% - Displays the IP adress of the player
+# %ping% - Displays the ping of the player
 # %day% - Displays the system date day
 # %month% - Displays the system date month
 # %year% - Displays the system date year

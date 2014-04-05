@@ -67,22 +67,20 @@ public class FancyTab extends JavaPlugin
 		Tablist.getInstance().loadTablist(tablist);
 
 		reloadTablist();
-
 		if (this.autorefresh) 
 		{
 			Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, startRefresh(), 1L, this.interval * 20L);
 		}
 
-		getLogger().info("Version 2.0 by Codebucket");
+		getLogger().info("Version 2.2 by Codebucket");
 	}
 	
 	@Override
 	public void onDisable() 
 	{
 		Bukkit.getScheduler().cancelTasks(this);
-
+		
 		unloadTablist();
-
 		this.tab.getTablist().clear();
 
 		getLogger().info("FancyTab disabled!");
