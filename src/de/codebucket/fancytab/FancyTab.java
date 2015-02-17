@@ -25,7 +25,6 @@ public class FancyTab extends JavaPlugin
 	private static boolean logconsole;
 	private boolean autorefresh;
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() 
 	{
@@ -69,8 +68,9 @@ public class FancyTab extends JavaPlugin
 		reloadTablist();
 		if (this.autorefresh) 
 		{
-			Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, startRefresh(), 1L, this.interval * 20L);
+			Bukkit.getScheduler().runTaskTimer(this, startRefreshTablist(), 1L, this.interval * 20L);
 		}
+		Bukkit.getScheduler().runTaskTimer(this, startRefreshPlayers(), 1L, 10L);
 
 		getLogger().info("Version 2.2 by Codebucket");
 	}
@@ -183,7 +183,7 @@ public class FancyTab extends JavaPlugin
 		}
 	}
 
-	private BukkitRunnable startRefresh() 
+	private BukkitRunnable startRefreshTablist() 
 	{
 		BukkitRunnable runnable = new BukkitRunnable() 
 		{
@@ -192,6 +192,21 @@ public class FancyTab extends JavaPlugin
 				for (Player player : Bukkit.getOnlinePlayers())
 				{
 					Tablist.getInstance().refreshTablist(player);
+				}
+			}
+		};
+		return runnable;
+	}
+	
+	private BukkitRunnable startRefreshPlayers() 
+	{
+		BukkitRunnable runnable = new BukkitRunnable() 
+		{
+			public void run()
+			{
+				for (Player player : Bukkit.getOnlinePlayers())
+				{
+					Tablist.getInstance().refreshPlayers(player);
 				}
 			}
 		};

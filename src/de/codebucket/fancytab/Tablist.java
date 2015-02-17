@@ -289,6 +289,45 @@ public class Tablist
 			this.playerCustomTablists.remove(player);
 		}
 	}
+	
+	public void refreshPlayers(Player player)
+	{
+		List<Object> packets = new ArrayList<>();
+		for (Player p : Bukkit.getOnlinePlayers()) 
+		{
+			if (player.canSee(p))
+			{
+				packets.add(this.packet.createTablistPacket(p.getPlayerListName(), true, getPing(p)));
+			}
+		}
+		this.packet.sendPackets(player, packets);
+	}
+	
+	public void addPlayer(Player player)
+	{
+		List<Object> packets = new ArrayList<>();
+		packets.add(this.packet.createTablistPacket(player.getPlayerListName(), true, getPing(player)));
+		for (Player p : Bukkit.getOnlinePlayers()) 
+		{
+			if (p.canSee(player))
+			{
+				this.packet.sendPackets(p, packets);
+			}
+		}
+	}
+	
+	public void removePlayer(Player player)
+	{
+		List<Object> packets = new ArrayList<>();
+		packets.add(this.packet.createTablistPacket(player.getPlayerListName(), false));
+		for (Player p : Bukkit.getOnlinePlayers()) 
+		{
+			if (p.canSee(player))
+			{
+				this.packet.sendPackets(p, packets);
+			}
+		}
+	}
 
 	public void loadTablist(List<String> tablist) 
 	{

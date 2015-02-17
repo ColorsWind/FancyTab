@@ -1,11 +1,11 @@
 package de.codebucket.fancytab;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ServerListener implements Listener 
 {
@@ -19,10 +19,21 @@ public class ServerListener implements Listener
 	@EventHandler(priority=EventPriority.MONITOR)
 	public void playerJoin(PlayerJoinEvent e) 
 	{
+		Tablist.getInstance().addPlayer(e.getPlayer());
 		Tablist.getInstance().setTablist(e.getPlayer());
-		for (Player player : Bukkit.getOnlinePlayers())
-		{
-			Tablist.getInstance().refreshTablist(player);
-		}
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void playerKick(PlayerKickEvent e) 
+	{
+		Tablist.getInstance().removeTablist(e.getPlayer());
+		Tablist.getInstance().removePlayer(e.getPlayer());
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void playerQuit(PlayerQuitEvent e) 
+	{
+		Tablist.getInstance().removeTablist(e.getPlayer());
+		Tablist.getInstance().removePlayer(e.getPlayer());
 	}
 }
